@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Multimodal Attendance & Engagement Agent</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <!-- Chart.js for Session Analytics -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <!-- Top Header Navigation -->
+  <header>
+    <div class="brand">
+      <div style="font-size: 1.8rem;">🎓</div>
+      <div>
+        <div class="brand-logo">Multimodal AI</div>
+        <div style="font-size: 0.75rem; color: var(--text-muted);">Classroom Intelligence & Attendance Agent</div>
+      </div>
+    </div>
+
+    <nav class="nav-tabs">
+      <button class="nav-tab active" data-tab="live">Live Monitor</button>
+      <button class="nav-tab" data-tab="teacher">Teacher Central</button>
+      <button class="nav-tab" data-tab="analytics">Analytics & Reports</button>
+    </nav>
+
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <div class="status-badge">
+        <span class="pulse-dot"></span>
+        <span>SESSION ACTIVE (<span id="sessionTimer">00:00</span>)</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- TAB 1: LIVE MONITOR -->
+    <div id="live" class="tab-pane active">
+      <div class="stats-row">
+        <div class="stat-box">
+          <div class="stat-value" id="avgAttentionValue">--%</div>
+          <div class="stat-label">Average Engagement</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" id="participantCount">0</div>
+          <div class="stat-label">Active Participants</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" id="presentCount" style="color: var(--accent-green);">0 / 0</div>
+          <div class="stat-label">Attendance Confirmed</div>
+        </div>
+      </div>
+
+      <div class="dashboard-grid">
+        <!-- Left: Live Vision & Audio Stream -->
+        <div>
+          <div class="card">
+            <div class="card-title">
+              <span>📹 Classroom Vision Feed</span>
+              <span style="font-size: 0.8rem; color: var(--accent-green);">● MJPEG Stream</span>
+            </div>
+            <div class="video-container">
+              <img id="videoStream" src="/api/video-feed" alt="Classroom Video Stream" onerror="this.src='https://placehold.co/640x480/1e293b/94a3b8?text=Camera+Connecting...'">
+            </div>
+          </div>
+
+          <!-- Audio Context Meter -->
+          <div class="card">
+            <div class="card-title">
+              <span>🎙️ Classroom Audio Context</span>
+              <span id="audioPattern" style="font-size: 0.8rem; color: var(--accent-cyan);">Normal Lecture</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-muted);">
+              <span>Acoustic Energy:</span>
+              <span id="audioDbValue" style="color: var(--text-primary); font-weight: 600;">-28.0 dB</span>
+            </div>
+            <div class="meter-bar-container">
+              <div class="meter-bar" id="audioMeterBar"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: AI Reasoning, Alerts & Attendance -->
+        <div>
+          <!-- AI Insights Card -->
+          <div class="card" style="border-color: rgba(59, 130, 246, 0.4);">
+            <div class="card-title" style="color: var(--accent-cyan);">
+              <span>🤖 Multimodal AI Insights</span>
+              <span id="aiInsightSource" style="font-size: 0.7rem; color: var(--text-muted);">AI Agent</span>
+            </div>
+            <p id="aiInsightText" style="font-size: 0.95rem; line-height: 1.5; color: #e2e8f0; margin-bottom: 0.75rem;">
+              Classroom attention is steady. All participants are maintaining focus.
+            </p>
+            <div style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.4rem;">
+              Pedagogical Suggestions:
+            </div>
+            <ul id="aiSuggestionsList" style="list-style: none; font-size: 0.85rem; color: #cbd5e1; padding-left: 0;">
+              <li>💡 Incorporate a visual diagram or code demo</li>
+              <li>💡 Pause for a brief 60-second peer discussion</li>
+            </ul>
+          </div>
+
+          <!-- Real-Time Alerts Feed -->
+          <div class="card">
+            <div class="card-title">
+              <span>🔔 Real-Time Feedback Alerts</span>
+            </div>
+            <div id="alertsFeed">
+              <div class="alert-item info">✨ All participants attentive. No issues detected.</div>
+            </div>
+          </div>
+
+          <!-- Presence-Based Attendance Table -->
+          <div class="card">
+            <div class="card-title">
+              <span>📋 Presence-Based Attendance Log</span>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Student</th>
+                  <th>Duration</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="attendanceTableBody">
+                <tr>
+                  <td colspan="4" style="text-align: center; color: var(--text-muted);">Scanning classroom...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: TEACHER CENTRAL -->
+    <div id="teacher" class="tab-pane">
+      <div style="margin-bottom: 1.5rem;">
+        <h2 style="font-size: 1.4rem; margin-bottom: 0.25rem;">Teacher Profile</h2>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">Effectiveness Score, Historical Class Trends & Recommendations</p>
+      </div>
+
+      <div class="dashboard-grid">
+        <!-- Score Card -->
+        <div class="card teacher-score-card">
+          <div class="score-circle">
+            <h1 id="teacherScore">87.5</h1>
+            <span>/ 100</span>
+          </div>
+          <div>
+            <div style="font-size: 1.25rem; font-weight: 700; color: #fff;">Teaching Effectiveness</div>
+            <div id="teacherTrend" style="color: var(--accent-green); font-size: 0.9rem; font-weight: 600; margin-top: 0.25rem;">
+              +12.0% vs last week
+            </div>
+            <div style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.5rem; max-width: 320px;">
+              Computed from aggregate multimodal session dynamics, attention peaks, and participation density.
+            </div>
+          </div>
+        </div>
+
+        <!-- Strengths & Recommendations -->
+        <div>
+          <div class="card">
+            <div class="card-title">⭐ Teaching Strengths</div>
+            <ul id="teacherStrengths" style="list-style: none; font-size: 0.9rem; color: #cbd5e1; line-height: 1.8;">
+              <li>🌟 High engagement sessions (85%+)</li>
+              <li>🌟 Emotion diversity management</li>
+            </ul>
+          </div>
+          <div class="card">
+            <div class="card-title">🎯 Targeted Recommendations</div>
+            <ul id="teacherRecs" style="list-style: none; font-size: 0.9rem; color: #cbd5e1; line-height: 1.8;">
+              <li>🎯 Try interactive polls (boost +10%)</li>
+              <li>🎯 Short video breaks (+25% re-engagement)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Class History Comparison -->
+      <div class="card">
+        <div class="card-title">📊 Class History Comparison</div>
+        <div class="stats-row" id="classHistoryCards">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+
+      <!-- Student Trends -->
+      <div class="card">
+        <div class="card-title">👥 Individual Student Trends</div>
+        <table>
+          <thead>
+            <tr>
+              <th>Student Name</th>
+              <th>Engagement Change</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="studentTrendsBody">
+            <!-- Dynamically populated -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAB 3: ANALYTICS & REPORTS -->
+    <div id="analytics" class="tab-pane">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <div>
+          <h2 style="font-size: 1.4rem; margin-bottom: 0.25rem;">Session Analytics</h2>
+          <p style="color: var(--text-muted); font-size: 0.9rem;">Deep dive into classroom engagement and temporal patterns</p>
+        </div>
+        <div style="display: flex; gap: 0.75rem;">
+          <button class="btn btn-secondary" onclick="printReport()">📄 PDF Report</button>
+          <button class="btn" onclick="exportCsv()">📊 CSV Export</button>
+        </div>
+      </div>
+
+      <!-- Chart 1: Attention Trend -->
+      <div class="card">
+        <div class="card-title">
+          <span>📈 Attention Trend Over Time</span>
+        </div>
+        <div style="position: relative; height: 260px; width: 100%;">
+          <canvas id="attentionChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Chart 2: Emotion Distribution -->
+      <div class="card">
+        <div class="card-title">
+          <span>📊 Emotion & Engagement Distribution Over Time</span>
+        </div>
+        <div style="position: relative; height: 260px; width: 100%;">
+          <canvas id="emotionChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="/static/js/audio_capture.js"></script>
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
