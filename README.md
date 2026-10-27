@@ -16,11 +16,8 @@ An AI-powered, privacy-preserving classroom intelligence system that integrates 
 3. [System Architecture](#-system-architecture)
 4. [Project Structure](#-project-structure)
 5. [Milestone & Activity Implementation](#-milestone--activity-implementation)
-6. [Installation & Setup](#-installation--setup)
-7. [Running the Application](#-running-the-application)
-8. [API Endpoints](#-api-endpoints)
-9. [Deploying for Demo Link](#-deploying-for-demo-link)
-10. [Submission Guide](#-submission-guide)
+6. [Running the Application](#-running-the-application)
+7. [API Endpoints](#-api-endpoints)
 
 ---
 
@@ -40,6 +37,19 @@ Continuously analyzes behavioral signals including head pose / face orientation,
 Using fused multimodal data, an assistive AI agent generates non-prescriptive, actionable pedagogical recommendations (e.g., suggesting interactive polls when group attention drops, or pacing adjustments during high noise intervals).
 
 ---
+
+## ✨ Key Features & System Capabilities
+
+- Automated attendance tracking based on sustained participant presence.
+- Face detection using OpenCV.
+- Audio signal analysis, including acoustic energy and speech activity.
+- Multimodal engagement scoring using vision and audio signals.
+- AI-driven classroom insights and teaching suggestions.
+- Teacher Central dashboard with session trends and recommendations.
+- Interactive analytics and session reports.
+- Attendance and analytics export in CSV and PDF formats.
+- FastAPI-based web dashboard with real-time updates.
+- Optional Streamlit dashboard.
 
 ## 🏗️ System Architecture
 
@@ -125,6 +135,36 @@ multimodal-attendance-agent/
 
 ---
 
+
+## 🖥️ Running the Application
+
+### FastAPI Dashboard
+
+Run the following command from the project root:
+
+```bash
+python run_server.py
+```
+
+Select option `1` to launch the FastAPI dashboard.
+
+Open your browser and navigate to:
+
+http://localhost:8000
+
+### Streamlit Dashboard
+
+Run:
+
+```bash
+streamlit run streamlit_app.py
+```
+
+Open your browser and navigate to:
+
+http://localhost:8501
+
+
 ## 🚀 Milestone & Activity Implementation
 
 | Milestone | Activity | Implementation File | Status |
@@ -150,6 +190,15 @@ multimodal-attendance-agent/
 | `GET` | `/api/video-feed` | Live MJPEG stream with bounding box HUD overlays |
 | `WS` | `/ws/audio` | Real-time WebSocket audio streaming and analysis |
 
+## 👩‍💻 Author
 
+**Sejal Malviya**
+
+- GitHub: [@sejal-26](https://github.com/sejal-26)
+- Project: [Multimodal Attendance & Engagement Agent](https://github.com/sejal-26/multimodal-attendance-agent)
+
+---
+
+⭐ If you find this project interesting, feel free to star the repository!
 ## 📄 License
 This project is licensed under the MIT License.
